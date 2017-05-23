@@ -23,8 +23,8 @@ let points = JSON.parse(fs.readFileSync('./points.json', 'utf8'));
 
 //Log new user and say blank user has joined
 client.on('guildMemberAdd', (member) => {
-  console.log('New User "${member.user.username}" has joined "${member.guild.name}"');
-  member.guild.defaultChannel.send('"${member.user.username}" has joined this server');
+  console.log(`New User '${member.user.username}' has joined '${member.guild.name}'`);
+  member.guild.defaultChannel.send(`${member.user.username}' has joined this server'`);
 });
 
 
@@ -48,9 +48,9 @@ client.on('message', (message) => {
   //Help command
   if (message.content.toLowerCase().startsWith(config.prefix + 'help')) {
     message.channel.send('Hello, I am snake squad bot!');
-    message.channel.send('If you would like an XD, type the prefix "' + prefix + '", then "can I get an xd"');
-    message.channel.send('If you would like me to say "pong!", type the prefix "' + prefix + '" "then ping"');
-    message.channel.send('If you would like me to tell you your level and points, type the prefix "' + prefix + '" "then level"');
+    message.channel.send('If you would like an XD, type the prefix "' + config.prefix + '", then "can I get an xd"');
+    message.channel.send('If you would like me to say "pong!", type the prefix "' + config.prefix + '" then "ping"');
+    message.channel.send('If you would like me to tell you your level and points, type the prefix "' + config.prefix + '" then "level"');
   }
 
   //Pong command
