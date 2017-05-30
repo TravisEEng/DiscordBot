@@ -51,6 +51,8 @@ client.on('message', (message) => {
     message.channel.send('If you would like an XD, type the prefix "' + config.prefix + '", then "can I get an xd"');
     message.channel.send('If you would like me to say "pong!", type the prefix "' + config.prefix + '" then "ping"');
     message.channel.send('If you would like me to tell you your level and points, type the prefix "' + config.prefix + '" then "level"');
+    message.channel.send('If you would like me to roll a number from 1 - 1000 type the prefix "' + config.prefix + '" then "roll".\nAdditionally, if you state a min and max like "!roll 1 - 10" I will follow it');
+
   }
 
   //Pong command
@@ -58,12 +60,54 @@ client.on('message', (message) => {
     message.channel.send('pong!');
   }
 
+  //roll command
+  if (message.content.toLowerCase().startsWith(config.prefix + "roll")) {
+    let rollNums = message.content.match(/\d* - \d*/g);
+    console.log("The min and max given is " + rollNums);
+    if (rollNums === null) {
+      let randomNum = Math.floor(Math.random() * 1000);
+      message.channel.send(randomNum);
+
+    } else {
+      tester = JSON.stringify(rollNums);
+      tester = tester.split(" - ");
+      rollMin = (tester[0].toString());
+      rollMax = (tester[1].toString());
+      console.log("roll min " + rollMin);
+      console.log("roll max " + rollMax);
+
+      rollMin = rollMin.match(/\d*/g);
+      rollMax = rollMax.match(/\d*/g);
+
+      rollMin = rollMin.filter(function(a) {
+        return a !== '';
+      });
+      rollMax = rollMax.filter(function(a) {
+        return a !== '';
+      });
+
+      rollMin = parseInt(rollMin[0]);
+      rollMax =  parseInt(rollMax[0]);
+
+      console.log(typeof(rollMin));
+      console.log(rollMax);
+
+      let randomNum = 0;
+       randomNum = Math.floor(Math.random() * (rollMax - rollMin + 1)) + rollMin;
+      console.log(randomNum);
+      message.channel.send(randomNum);
+    }
+    //if(message.content.toLowerCase().includes().match(/^[0-9]+$/)){
+    //let randomNum = Math.floor(Math.random() * 100);
+    //}
+  }
+
   //XD command
   if (message.content.toLowerCase().includes(config.prefix + 'can i get an xd')) {
     message.channel.send('XD');
   }
 
-//point implementation system - if points doesnt exist for user creates them in file
+  //point implementation system - if points doesnt exist for user creates them in file
   if (!points[message.author.id]) points[message.author.id] = {
     points: 0,
     level: 0
@@ -71,7 +115,7 @@ client.on('message', (message) => {
 
 
   let userData = points[message.author.id];
-  userData.points++;
+  //userData.points++;
 
   let curLevel = Math.floor(0.1 * Math.sqrt(userData.points));
   if (curLevel > userData.level) {
@@ -86,5 +130,21 @@ client.on('message', (message) => {
   fs.writeFile('./points.json', JSON.stringify(points), (err) => {
     if (err) console.error(err);
   });
+
+  //webhook implementation
+  let args = message.content.split(' ').slice(1);
+  if (message.content.startsWith(config.prefix + 'createHook')) {
+    const nameAvatar = args.join(' ');
+    const linkCheck = /https?:\/\/.+\.(?:png|jpg|jpeg)/gi;
+    if (!linkCheck.test(nameAvatar)) return message.reply('You must supply an image link.');
+    const avatar = nameAvatar.match(linkCheck)[0];
+    const name = nameAvatar.replace(linkCheck, '');
+    message.channel.createWebhook(name, avatar)
+      .then(webhook => webhook.edit(name, avatar)
+        .catch(error => console.log(error)))
+      .then(wb => message.author.send(`Here is your webhook https://canary.discordapp.com/api/webhooks/${wb.id}/${wb.token}\n\nPlease keep this safe, as you could be exploited.`)
+        .catch(error => console.log(error)))
+      .catch(error => console.log(error));
+  }
 
 });
