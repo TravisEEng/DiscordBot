@@ -30,6 +30,8 @@ client.on('guildMemberAdd', (member) => {
 
 // Depending on what users type provide different responses
 client.on('message', (message) => {
+  let userData = points[message.author.id];
+
 
   //Exit and stop if it's is not a command or if a bot is talking
   if (!message.content.startsWith(config.prefix) || message.author.bot) return;
@@ -65,8 +67,34 @@ client.on('message', (message) => {
     let rollNums = message.content.match(/\d* - \d*/g);
     console.log("The min and max given is " + rollNums);
     if (rollNums === null) {
-      let randomNum = Math.floor(Math.random() * 1000);
+      let randomNum = Math.floor(Math.random() * 100);
       message.channel.send(randomNum);
+
+      //implement points into rollNums
+
+      if (randomNum > 10 || randomNum < -10) {
+        let numString = randomNum.toString();
+        let j = 0;
+
+
+        for (i = 0; i < numString.length; i++) {
+
+          let numString = randomNum.toString();
+          let comparAtor = numString.charAt(0);
+          let iteratorV = numString.charAt(i);
+          if (comparAtor == iteratorV) {
+
+            j++;
+          }
+          console.log(j);
+          console.log(numString.length);
+          if (j == numString.length) {
+            message.channel.send("You got a point for rolling a " + numString + "!");
+            userData.points++;
+          }
+        }
+
+      }
 
     } else {
       tester = JSON.stringify(rollNums);
@@ -114,7 +142,7 @@ client.on('message', (message) => {
   };
 
 
-  let userData = points[message.author.id];
+  //let userData = points[message.author.id];
   //userData.points++;
 
   let curLevel = Math.floor(0.1 * Math.sqrt(userData.points));
