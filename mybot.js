@@ -87,13 +87,13 @@ client.on('message', (message) => {
       });
 
       rollMin = parseInt(rollMin[0]);
-      rollMax =  parseInt(rollMax[0]);
+      rollMax = parseInt(rollMax[0]);
 
       console.log(typeof(rollMin));
       console.log(rollMax);
 
       let randomNum = 0;
-       randomNum = Math.floor(Math.random() * (rollMax - rollMin + 1)) + rollMin;
+      randomNum = Math.floor(Math.random() * (rollMax - rollMin + 1)) + rollMin;
       console.log(randomNum);
       message.channel.send(randomNum);
     }
