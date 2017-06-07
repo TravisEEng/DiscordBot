@@ -67,8 +67,8 @@ client.on('message', (message) => {
     let rollNums = message.content.match(/\d* - \d*/g);
     console.log("The min and max given is " + rollNums);
     if (rollNums === null) {
-      let randomNum = Math.floor(Math.random() * 100);
-      message.channel.send(randomNum);
+      let randomNum = Math.floor(Math.random() * 1000);
+      message.channel.send(`${message.author}` + " has rolled a " + randomNum);
 
       //implement points into rollNums
 
@@ -89,8 +89,14 @@ client.on('message', (message) => {
           console.log(j);
           console.log(numString.length);
           if (j == numString.length) {
-            message.channel.send("You got a point for rolling a " + numString + "!");
-            userData.points++;
+            if (j > 2) {
+              userData.points += j;
+              message.channel.send(`Feels good man, ${message.author}` + " got " + j + " points for rolling a " + numString + "!");
+            } else {
+              message.channel.send(`${message.author}` + " got a point for rolling a " + numString + "!");
+              userData.points++;
+            }
+
           }
         }
 
@@ -123,7 +129,7 @@ client.on('message', (message) => {
       let randomNum = 0;
       randomNum = Math.floor(Math.random() * (rollMax - rollMin + 1)) + rollMin;
       console.log(randomNum);
-      message.channel.send(randomNum);
+      message.channel.send(`${message.author}` + " has rolled a " + randomNum);
     }
     //if(message.content.toLowerCase().includes().match(/^[0-9]+$/)){
     //let randomNum = Math.floor(Math.random() * 100);
